@@ -118,6 +118,8 @@ class CropDetailsScreen extends StatelessWidget {
                         ...List.generate(
                           5,
                           (index) => HomeCategory(
+                            image:
+                                "https://media.istockphoto.com/id/622925154/photo/ripe-rice-in-the-field-of-farmland.jpg?s=2048x2048&w=is&k=20&c=auNzfGt6fX1e_w2fvW0CgyRURKMGiL-P2ZnwA8tw1ic=",
                             text1: 'text1',
                             onTap: () {},
                           ),

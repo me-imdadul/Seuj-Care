@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 import 'package:seujcare/models/article_model.dart';
-import 'package:seujcare/models/crop_model.dart';
 
 class ArticleRepository {
   final Box box = Hive.box('myBox');
@@ -17,12 +16,12 @@ class ArticleRepository {
     }
   }
 
-  Future<List<CropModel>> getArticles() async {
+  Future<List<ArticleModel>> getArticles() async {
     try {
       List<Map<String, dynamic>> list = List<Map<String, dynamic>>.from(
           box.get('articles', defaultValue: []));
 
-      return list.map((crop) => CropModel.fromMap(crop)).toList();
+      return list.map((crop) => ArticleModel.fromMap(crop)).toList();
     } catch (e) {
       return [];
     }

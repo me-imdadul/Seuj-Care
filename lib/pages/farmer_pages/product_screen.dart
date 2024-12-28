@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:seujcare/models/crop_model.dart';
+import 'package:seujcare/models/crop_disease_model.dart';
 import 'package:seujcare/widgets/home_screen_widgets/home_category_widget.dart';
 import 'package:seujcare/widgets/shared_widgets/section_title_widget.dart';
 
@@ -146,7 +146,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           7,
                           (index) {
                             return HomeCategory(
-                              text1: crops[index],
+                              image:
+                                  "https://media.istockphoto.com/id/622925154/photo/ripe-rice-in-the-field-of-farmland.jpg?s=2048x2048&w=is&k=20&c=auNzfGt6fX1e_w2fvW0CgyRURKMGiL-P2ZnwA8tw1ic=",
+                              text1: cropslist[index],
                               onTap: () =>
                                   Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) =>

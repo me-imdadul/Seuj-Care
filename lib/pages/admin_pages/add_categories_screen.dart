@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:seujcare/models/crop_model.dart';
+import 'package:seujcare/models/crop_disease_model.dart';
 import 'package:seujcare/providers/admin_provider.dart';
 
 import 'package:seujcare/utils/constants.dart';
@@ -26,6 +27,7 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
   final image = TextEditingController();
   final information = TextEditingController();
   final treatment = TextEditingController();
+  final fertilizer = TextEditingController();
 
   @override
   void initState() {
@@ -34,14 +36,9 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
   }
 
   @override
-  void didChangeDependencies() {
-    Provider.of<AdminProvider>(context, listen: false).getCropList();
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    var provider = Provider.of<AdminProvider>(context, listen: false);
+    var p = Provider.of<AdminProvider>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories'),
@@ -70,7 +67,7 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
             child: TabBarView(
               controller: controller,
               children: [
-                _buildCategoryList(context, provider.crops),
+                _buildCategoryList(context),
                 _buildAddCategory(context),
               ],
             ),
@@ -80,58 +77,89 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
     );
   }
 
-  _buildCategoryList(BuildContext context, List<CropModel> lists) {
-    return Expanded(
-        child: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            ...List.generate(
-              lists.length,
-              (index) => Card(
-                elevation: 5,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ClipRRect(
-                        child: Image.asset(
-                          'assets/tomatoe.webp',
-                          height: 140,
-                          width: 100,
-                          fit: BoxFit.cover,
+  _buildCategoryList(BuildContext context) {
+    var provider = Provider.of<AdminProvider>(context);
+    return provider.cropDiseases.isEmpty
+        ? const Center(
+            child: Text('No Category Found!'),
+          )
+        : SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                children: [
+                  ...List.generate(
+                    provider.cropDiseases.length,
+                    (index) => Card(
+                      elevation: 5,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                provider.cropDiseases[index].diseaseImage
+                                        .isNotEmpty
+                                    ? provider
+                                        .cropDiseases[index].diseaseImage[0]
+                                    : '',
+                                height: 140,
+                                width: 100,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return const Icon(Icons.image_not_supported);
+                                },
+                              ),
+                            ),
+                            Gap(20),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    provider.cropDiseases[index].name,
+                                    style: const TextStyle(
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Gap(4),
+                                  Text(
+                                    provider.cropDiseases[index].information,
+                                    style: TextStyle(fontSize: 16),
+                                  )
+                                ],
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () async {
+                                var response = await Provider.of<AdminProvider>(
+                                        context,
+                                        listen: false)
+                                    .deletecropDiseaseCategory(index);
+                                print(response);
+                              },
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                                size: 30,
+                              ),
+                            )
+                          ],
                         ),
-                        borderRadius: BorderRadius.circular(20),
                       ),
-                      Gap(10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Category 1',
-                            style: TextStyle(
-                                fontSize: 28, fontWeight: FontWeight.bold),
-                          ),
-                          Gap(4),
-                          Text('Description asidj sdhbds ybhd yhd')
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+                    ),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-      ),
-    ));
+            ),
+          );
   }
 
   _buildAddCategory(BuildContext context) {
-    return Expanded(
-        child: SingleChildScrollView(
+    return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -173,13 +201,38 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
             TextField(
               controller: treatment,
             ),
+            Text('Suggested Fertilizer'),
+            TextField(
+              controller: fertilizer,
+            ),
             MaterialButton(
-              onPressed: () {},
-              child: Text('Add'),
+              minWidth: double.infinity,
+              color: Colors.green,
+              onPressed: () async {
+                var cropDiseaseModel = CropDiseaseModel(
+                    id: DateTime.now().toString(),
+                    name: name.text,
+                    season: season.text,
+                    symptoms: symptom.text,
+                    diseaseName: disease.text,
+                    condition: condition.text,
+                    stage: stage.text,
+                    diseaseImage: [image.text],
+                    information: information.text,
+                    treatment: treatment.text,
+                    suggestedFertilizer: ["Fertilizer 1"]);
+                print(cropDiseaseModel.toMap().toString());
+                var response =
+                    await Provider.of<AdminProvider>(context, listen: false)
+                        .addCropDiseaseCategory(cropDiseaseModel);
+
+                print(response);
+              },
+              child: const Text('Add'),
             )
           ],
         ),
       ),
-    ));
+    );
   }
 }

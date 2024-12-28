@@ -1,42 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:seujcare/models/crop_model.dart';
+import 'package:seujcare/models/crop_disease_model.dart';
 import 'package:seujcare/models/dashboard_model.dart';
 import 'package:seujcare/models/expert_model.dart';
 import 'package:seujcare/repository/crop_repository.dart';
 import 'package:seujcare/repository/dashboard_repository.dart';
 import 'package:seujcare/repository/expert_repository.dart';
-import 'package:seujcare/services/auth_service.dart';
 
 class AdminProvider with ChangeNotifier {
   final _dashboardRepository = DashboardRepository();
   final _expertrepository = ExpertRepository();
-  final _cropRepository = CropRepository();
+  final _cropDiseaseRepository = CropDiseaseRepository();
 
-  late DashboardModel _data;
-  late List<ExpertModel> _experts;
-  late List<CropModel> _crops;
+  List<ExpertModel> _experts = [];
+  List<CropDiseaseModel> _crops = [];
 
-  DashboardModel get data => _data;
-  List<ExpertModel> get experts => _experts;
-  List<CropModel> get crops => _crops;
-
-  void setDashboardData(DashboardModel dashboard) {
-    _data = _dashboardRepository.setDashboardData(dashboard);
-    notifyListeners();
+  DashboardModel get data {
+    return _dashboardRepository.adminDashboardData();
   }
 
-// expert list
-  void expertList() {
+  List<ExpertModel> get experts {
     _experts = _expertrepository.allexperts;
-    notifyListeners();
+    return _experts;
   }
 
-  void addCropData(CropModel crop) {
-    _cropRepository.addCropDetails(crop);
-    notifyListeners();
+  List<CropDiseaseModel> get cropDiseases {
+    _crops = _cropDiseaseRepository.getCrops();
+    return _crops;
   }
 
-  void getCropList() async {
-    _crops = await _cropRepository.getCrops();
+  Future<String?> addCropDiseaseCategory(CropDiseaseModel cropDisease) async {
+    String? response = await _cropDiseaseRepository.addCropDisease(cropDisease);
+    if (response == null) {
+      notifyListeners();
+    }
+    return response;
+  }
+
+  Future<String?> deletecropDiseaseCategory(int index) async {
+    String? response = await _cropDiseaseRepository.deleteCropDisease(index);
+    if (response == null) {
+      notifyListeners();
+    }
+    return response;
   }
 }

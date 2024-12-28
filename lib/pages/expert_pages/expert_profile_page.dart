@@ -2,14 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:seujcare/models/expert_model.dart';
 import 'package:seujcare/pages/expert_pages/edit_profile.dart';
 import 'package:seujcare/pages/farmer_pages/login_signup_screen.dart';
 import 'package:seujcare/services/auth_service.dart';
 import 'package:seujcare/utils/commons.dart';
 
-class ExpertProfile extends StatelessWidget {
-  const ExpertProfile({Key? key}) : super(key: key);
+class ExpertProfile extends StatefulWidget {
+  const ExpertProfile({
+    super.key,
+  });
 
+  @override
+  State<ExpertProfile> createState() => _ExpertProfileState();
+}
+
+class _ExpertProfileState extends State<ExpertProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,13 +28,20 @@ class ExpertProfile extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
-          GestureDetector(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const ExpertEditProfileScreen(),
-                ));
-              },
-              child: const Icon(Icons.edit)),
+          FutureBuilder(
+              future: AuthenticationServices().session,
+              builder: (context, snapshot) {
+                if (snapshot.data!.isEmpty) {
+                  return Container();
+                }
+                return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const ExpertEditProfileScreen(),
+                      ));
+                    },
+                    child: const Icon(Icons.edit));
+              }),
           Gap(20)
         ],
       ),
@@ -38,10 +53,13 @@ class ExpertProfile extends StatelessWidget {
             // Profile Header
             Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 40,
-                  backgroundImage: AssetImage(
-                      'assets/tomatoe.webp'), // Replace with actual image asset
+                  child: Image.network(
+                    '',
+                    errorBuilder: (context, error, stackTrace) =>
+                        Icon(Icons.person),
+                  ), // Replace with actual image asset
                 ),
                 const SizedBox(width: 16),
                 Column(
@@ -145,21 +163,29 @@ class ExpertProfile extends StatelessWidget {
               ),
             ),
             Gap(60),
-            MaterialButton(
-              minWidth: double.infinity,
-              color: Colors.green,
-              height: 60,
-              onPressed: () {
-                AuthenticationServices().logOut();
-                replaceToScreen(context, LoginPage());
-              },
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
-              child: Text(
-                'Log Out',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            )
+
+            FutureBuilder(
+                future: AuthenticationServices().session,
+                builder: (context, snapshot) {
+                  if (snapshot.data!.isEmpty) {
+                    return Container();
+                  }
+                  return MaterialButton(
+                    minWidth: double.infinity,
+                    color: Colors.green,
+                    height: 60,
+                    onPressed: () {
+                      AuthenticationServices().logOut();
+                      replaceToScreen(context, LoginPage());
+                    },
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Text(
+                      'Log Out',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  );
+                })
           ],
         ),
       ),

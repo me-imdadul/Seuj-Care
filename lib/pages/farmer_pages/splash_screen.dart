@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:seujcare/models/splash_model.dart';
+import 'package:seujcare/pages/admin_pages/admin_main_screen.dart';
 
 import 'package:seujcare/pages/farmer_pages/login_signup_screen.dart';
 
@@ -112,6 +113,11 @@ class _SplashScreenState extends State<SplashScreen> {
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => const LoginPage(),
+                  ));
+                },
+                onLongPress: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AdminMainScreen(),
                   ));
                 },
                 child: Text(

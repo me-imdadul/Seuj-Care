@@ -91,7 +91,8 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 20.0),
             MaterialButton(
               onPressed: () async {
-                final emailText = email.text.trim().toLowerCase();
+                final emailText = email.text.toLowerCase().trim();
+                print(emailText);
                 final passwordText = password.text;
 
                 if (!isValidInput(emailText, passwordText)) {
@@ -110,13 +111,13 @@ class _LoginPageState extends State<LoginPage> {
                         (box.get('lan', defaultValue: null) == null)
                             ? const LanguageSelectScreen()
                             : const HomeScreen();
-                    navigateToScreen(context, nextScreen);
+                    replaceToScreen(context, nextScreen);
                   } else if (session['role'] == 'Expert') {
                     final nextScreen =
                         (box.get('lan', defaultValue: null) == null)
                             ? const LanguageSelectScreen()
                             : const ExpertMainScreen();
-                    navigateToScreen(context, nextScreen);
+                    replaceToScreen(context, nextScreen);
                   }
                 } else {
                   showSnackBar(context, response);
@@ -309,8 +310,8 @@ class _SignupPageState extends State<SignupPage> {
 
                   if (selectedRole == role[0]) {
                     // farmer
-                    var farmer =
-                        createFarmer(name.text, email.text, password.text);
+                    var farmer = createFarmer(
+                        name.text, email.text.toLowerCase(), password.text);
 
                     var response = await auth.farmerSignup(farmer);
 
@@ -322,8 +323,8 @@ class _SignupPageState extends State<SignupPage> {
                       showSnackBar(context, response);
                     }
                   } else {
-                    var expert =
-                        createExpert(name.text, email.text, password.text);
+                    var expert = createExpert(
+                        name.text, email.text.toLowerCase(), password.text);
                     var response = await auth.expertSignup(expert);
 
                     if (response == null) {

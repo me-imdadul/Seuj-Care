@@ -2,6 +2,9 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
+import 'package:seujcare/models/expert_model.dart';
+import 'package:seujcare/providers/admin_provider.dart';
 import 'package:seujcare/utils/constants.dart';
 import 'package:seujcare/widgets/admin/expert_list_card.dart';
 
@@ -10,6 +13,7 @@ class FarmerIssueScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<AdminProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kbgColor,
@@ -56,11 +60,15 @@ class FarmerIssueScreen extends StatelessWidget {
             ),
             const Gap(10),
             ...List.generate(
-              50,
+              provider.experts.length,
               (index) {
                 return FadeInUp(
                     delay: Duration(milliseconds: index * 80),
-                    child: GestureDetector(child: const ExpertListCard()));
+                    child: GestureDetector(
+                        child: ExpertListCard(
+                      expertModel: provider.experts[index],
+                      onTap: () {},
+                    )));
               },
             )
           ],

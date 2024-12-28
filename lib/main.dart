@@ -30,25 +30,26 @@ class _MyAppState extends State<MyApp> {
         Map<String, dynamic>.from(box.get('session', defaultValue: {}));
 
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (context) => AdminProvider(),
-        ),
-      ],
-      child: MaterialApp(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => AdminProvider(),
+          ),
+        ],
+        child: MaterialApp(
           title: 'Seuj Care',
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.greenAccent),
             useMaterial3: true,
           ),
-          // home: Builder(builder: (context) {
-          //   if (session.isEmpty) {
-          //     return const SplashScreen();
-          //   }
-          //   return const HomeScreen();
-          // }),
-          home: AdminMainScreen()),
-    );
+          home: Builder(builder: (context) {
+            if (session.isEmpty) {
+              return const SplashScreen();
+            }
+            return const HomeScreen();
+          }),
+        )
+        // home: AdminMainScreen()),
+        );
   }
 }

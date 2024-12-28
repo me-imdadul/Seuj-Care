@@ -27,10 +27,8 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   final repository = DashboardRepository();
 
   @override
-  void didChangeDependencies() {
-    Provider.of<AdminProvider>(context, listen: false)
-        .setDashboardData(repository.adminDashboardData());
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -245,13 +243,13 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                       'Issues': provider.data.issuesCount
                     },
                     colorAccessor: (domain, value) {
-                      if (domain == 'alpha') {
+                      if (domain == 'Farmers') {
                         return Colors.green;
-                      } else if (domain == 'gamma') {
+                      } else if (domain == 'Experts') {
                         return Colors.orange;
                       }
 
-                      return Colors.yellow;
+                      return Colors.blue;
                     },
                     measureAccessor: (value) => value.toDouble(),
                     labelAccessor: (domain, value, percent) => ChartLabel(
@@ -283,7 +281,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const FarmerIssueScreen(),
+                      builder: (context) => FarmerIssueScreen(),
                     )),
                     child: Container(
                       height: 80,

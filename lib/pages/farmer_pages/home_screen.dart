@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:seujcare/models/crop_model.dart';
+import 'package:seujcare/models/crop_disease_model.dart';
 import 'package:seujcare/pages/farmer_pages/ask_expert_screen.dart';
 import 'package:seujcare/pages/farmer_pages/crop_desease_screen.dart';
 import 'package:seujcare/pages/farmer_pages/crop_detail_screen.dart';
@@ -12,7 +12,6 @@ import 'package:seujcare/pages/farmer_pages/post_screen.dart';
 import 'package:seujcare/pages/farmer_pages/product_screen.dart';
 import 'package:seujcare/pages/farmer_pages/profile_screen.dart';
 import 'package:seujcare/pages/farmer_pages/season_details_screen.dart';
-import 'package:seujcare/pages/farmer_pages/splash_screen.dart';
 import 'package:seujcare/services/auth_service.dart';
 import 'package:seujcare/widgets/home_screen_widgets/home_category_widget.dart';
 import 'package:seujcare/widgets/home_screen_widgets/home_trending_card_widget.dart';
@@ -71,10 +70,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   5,
                   (index) {
                     return HomeCategory(
+                      image:
+                          "https://media.istockphoto.com/id/622925154/photo/ripe-rice-in-the-field-of-farmland.jpg?s=2048x2048&w=is&k=20&c=auNzfGt6fX1e_w2fvW0CgyRURKMGiL-P2ZnwA8tw1ic=",
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const CropDetailsScreen(),
                       )),
-                      text1: crops[index],
+                      text1: cropslist[index],
                     );
                   },
                 ),
@@ -83,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const Gap(15),
             const SectionTitle(
-              title: 'Trending Issues',
+              title: 'Issues',
             ),
             const Gap(15),
             SingleChildScrollView(
@@ -109,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const Gap(20),
             const SectionTitle(
-              title: 'Trending Crops',
+              title: 'Crops',
             ),
             const Gap(15),
             SingleChildScrollView(
@@ -120,10 +121,55 @@ class _HomeScreenState extends State<HomeScreen> {
                   5,
                   (index) {
                     return HomeCategory(
-                      text1: crops[index],
+                      text1: cropslist[index],
+                      image:
+                          'https://gardenseason.com/wp-content/uploads/2020/04/Garden-in-late-summer-_-summer-garden-crops-_-ss-_-featured.jpg',
                       onTap: () => Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const ProductDetailsScreen(),
                       )),
+                    );
+                  },
+                ),
+                const Gap(15),
+              ]),
+            ),
+            Gap(15),
+            const SectionTitle(
+              title: 'Seasonal',
+            ),
+            const Gap(10),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(children: [
+                const Gap(15),
+                ...List.generate(
+                  5,
+                  (index) {
+                    List<String> seasons = [
+                      "Summer",
+                      "Autumn",
+                      "Winter",
+                      "Rainy",
+                      "Fall"
+                    ];
+                    return Card(
+                      elevation: 2,
+                      margin: EdgeInsets.symmetric(horizontal: 6, vertical: 7),
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Image.network(
+                                  height: 120,
+                                  width: 160,
+                                  fit: BoxFit.cover,
+                                  'https://www.factsmostly.com/wp-content/uploads/2024/08/Summer-Season.webp')),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Text(seasons[index]),
+                          )
+                        ],
+                      ),
                     );
                   },
                 ),
@@ -233,7 +279,7 @@ class AppDrawer extends StatelessWidget {
                   ),
                   DrawerItem(
                     icon: Icons.trending_up,
-                    title: "Trending Crops",
+                    title: "Crops",
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => CropListScreen(),
@@ -268,28 +314,12 @@ class AppDrawer extends StatelessWidget {
                     },
                   ),
                   DrawerItem(
-                    icon: Icons.list,
-                    title: "Crop List",
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => CropListScreen(),
-                      ));
-                    },
-                  ),
-                  DrawerItem(
                     icon: Icons.cloud,
                     title: "Season Details",
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => SeasonsInformationScreen(),
                       ));
-                    },
-                  ),
-                  DrawerItem(
-                    icon: Icons.info,
-                    title: "About Us",
-                    onTap: () {
-                      // Show app info
                     },
                   ),
                   DrawerItem(

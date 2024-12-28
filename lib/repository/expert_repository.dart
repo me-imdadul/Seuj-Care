@@ -6,13 +6,15 @@ class ExpertRepository {
 
   List<ExpertModel> get allexperts {
     try {
-      List<Map<String, dynamic>> lists =
-          List<Map<String, dynamic>>.from(_box.get('users', defaultValue: []));
+      List<Map<dynamic, dynamic>> lists =
+          List<Map<dynamic, dynamic>>.from(_box.get('users', defaultValue: []));
+
       var experts =
           lists.where((element) => element['role'] == 'Expert').toList();
 
       return experts.map((map) => ExpertModel.fromMap(map)).toList();
     } catch (e) {
+      print('Something wrong while fetching users $e');
       return [];
     }
   }
@@ -20,8 +22,8 @@ class ExpertRepository {
   /// Update farmer details
   Future<String?> updateExpert(String id, ExpertModel expert) async {
     try {
-      List<Map<String, dynamic>> lists =
-          List<Map<String, dynamic>>.from(_box.get('users', defaultValue: []));
+      List<Map<dynamic, dynamic>> lists =
+          List<Map<dynamic, dynamic>>.from(_box.get('users', defaultValue: []));
 
       int index = lists.indexWhere((f) => f['id'] == id);
 
@@ -40,8 +42,8 @@ class ExpertRepository {
   /// Delete a farmer account
   Future<String?> deleteExpert(String id) async {
     try {
-      List<Map<String, dynamic>> experts =
-          List<Map<String, dynamic>>.from(_box.get('lists', defaultValue: []));
+      List<Map<dynamic, dynamic>> experts =
+          List<Map<dynamic, dynamic>>.from(_box.get('users', defaultValue: []));
       experts.removeWhere((f) => f['id'] == id);
       await _box.put('users', experts);
       return null;

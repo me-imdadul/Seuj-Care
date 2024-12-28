@@ -1,93 +1,85 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 class CropModel {
   final String name;
-  final String id;
+  final String description;
   final String season;
-  final String desc;
+  final String information;
+  final String harvestingDays;
+  final String wateringSchedule;
+  final List<String> fertilizationPlan;
+  final String suggestions;
+  final String cropUrl;
   CropModel({
     required this.name,
-    required this.id,
+    required this.description,
     required this.season,
-    required this.desc,
+    required this.information,
+    required this.harvestingDays,
+    required this.wateringSchedule,
+    required this.fertilizationPlan,
+    required this.suggestions,
+    required this.cropUrl,
   });
 
   CropModel copyWith({
     String? name,
-    String? id,
+    String? description,
     String? season,
-    String? desc,
+    String? information,
+    String? harvestingDays,
+    String? wateringSchedule,
+    List<String>? fertilizationPlan,
+    String? suggestions,
+    String? cropUrl,
   }) {
     return CropModel(
       name: name ?? this.name,
-      id: id ?? this.id,
+      description: description ?? this.description,
       season: season ?? this.season,
-      desc: desc ?? this.desc,
+      information: information ?? this.information,
+      harvestingDays: harvestingDays ?? this.harvestingDays,
+      wateringSchedule: wateringSchedule ?? this.wateringSchedule,
+      fertilizationPlan: fertilizationPlan ?? this.fertilizationPlan,
+      suggestions: suggestions ?? this.suggestions,
+      cropUrl: cropUrl ?? this.cropUrl,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'name': name,
-      'id': id,
+      'description': description,
       'season': season,
-      'desc': desc,
+      'information': information,
+      'harvestingDays': harvestingDays,
+      'wateringSchedule': wateringSchedule,
+      'fertilizationPlan': fertilizationPlan,
+      'suggestions': suggestions,
+      'cropUrl': cropUrl,
     };
   }
 
   factory CropModel.fromMap(Map<String, dynamic> map) {
     return CropModel(
       name: map['name'] as String,
-      id: map['id'] as String,
+      description: map['description'] as String,
       season: map['season'] as String,
-      desc: map['desc'] as String,
+      information: map['information'] as String,
+      harvestingDays: map['harvestingDays'] as String,
+      wateringSchedule: map['wateringSchedule'] as String,
+      fertilizationPlan:
+          List<String>.from((map['fertilizationPlan'] as List<String>)),
+      suggestions: map['suggestions'] as String,
+      cropUrl: map['cropUrl'] as String,
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory CropModel.fromJson(String source) =>
+      CropModel.fromMap(json.decode(source) as Map<String, dynamic>);
 }
-
-List<String> crops = [
-  'Wheat',
-  'Rice',
-  'Maize',
-  'Barley',
-  'Millet',
-  'Sorghum',
-  'Soybean',
-  'Groundnut',
-  'Cotton',
-  'Sugarcane',
-  'Potato',
-  'Tomato',
-  'Onion',
-  'Cabbage',
-  'Cauliflower',
-  'Chickpea',
-  'Lentil',
-  'Mustard',
-  'Sunflower',
-  'Tea'
-];
-
-List<String> cropDiseases = [
-  'Rust (Wheat)',
-  'Blast (Rice)',
-  'Maize Streak Virus',
-  'Powdery Mildew',
-  'Downy Mildew',
-  'Smut (Barley)',
-  'Anthracnose (Soybean)',
-  'Leaf Spot (Groundnut)',
-  'Bollworm (Cotton)',
-  'Red Rot (Sugarcane)',
-  'Late Blight (Potato)',
-  'Early Blight (Tomato)',
-  'Purple Blotch (Onion)',
-  'Black Rot (Cabbage)',
-  'Clubroot (Cauliflower)',
-  'Wilt (Chickpea)',
-  'Rust (Lentil)',
-  'White Rust (Mustard)',
-  'Alternaria (Sunflower)',
-  'Blister Blight (Tea)'
-];

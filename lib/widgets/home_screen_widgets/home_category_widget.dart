@@ -3,8 +3,14 @@ import 'package:seujcare/pages/farmer_pages/product_screen.dart';
 
 class HomeCategory extends StatelessWidget {
   final String text1;
+  final String image;
+
   final VoidCallback onTap;
-  const HomeCategory({super.key, required this.text1, required this.onTap});
+  const HomeCategory(
+      {super.key,
+      required this.text1,
+      required this.onTap,
+      required this.image});
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +33,9 @@ class HomeCategory extends StatelessWidget {
                       blurRadius: 6,
                       offset: Offset(2, 4))
                 ],
-                image: const DecorationImage(
+                image: DecorationImage(
                     image: NetworkImage(
-                      "https://media.istockphoto.com/id/622925154/photo/ripe-rice-in-the-field-of-farmland.jpg?s=2048x2048&w=is&k=20&c=auNzfGt6fX1e_w2fvW0CgyRURKMGiL-P2ZnwA8tw1ic=",
+                      image,
                     ),
                     fit: BoxFit.cover)),
           ),

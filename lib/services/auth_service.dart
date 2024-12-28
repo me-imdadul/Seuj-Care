@@ -9,14 +9,13 @@ class AuthenticationServices {
   Future<String?> userLogin(String email, String password) async {
     // Retrieve the farmers data
     try {
-      List<Map<String, dynamic>> list = List<Map<String, dynamic>>.from(
-        (box.get('users', defaultValue: []) as List).map(
-          (item) => Map<String, dynamic>.from(item as Map),
-        ),
-      );
+      List<Map<dynamic, dynamic>> list =
+          List<Map<dynamic, dynamic>>.from(box.get('users', defaultValue: []));
 
       // Find the index of the farmer by email
       int emailIndex = list.indexWhere((element) => element['email'] == email);
+
+      print(list.toString());
 
       // Ensure the email exists
       if (emailIndex == -1) {
@@ -38,9 +37,9 @@ class AuthenticationServices {
 
   Future<String?> farmerSignup(FarmerModel farmer) async {
     try {
-      List<Map<String, dynamic>> list = List<Map<String, dynamic>>.from(
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
         (box.get('users', defaultValue: []) as List).map(
-          (item) => Map<String, dynamic>.from(item as Map),
+          (item) => Map<dynamic, dynamic>.from(item as Map),
         ),
       );
 
@@ -50,16 +49,7 @@ class AuthenticationServices {
       );
 
       if (index == -1) {
-        Map<String, dynamic> data = {
-          'id': farmer.id,
-          'name': farmer.name,
-          'email': farmer.email,
-          'password': farmer.password,
-          'profileImg': farmer.profilePic,
-          'role': 'Farmer'
-        };
-
-        list.add(data);
+        list.add(farmer.toMap());
         await box.put('users', list);
         return null;
       }
@@ -71,10 +61,8 @@ class AuthenticationServices {
 
   Future<String?> expertSignup(ExpertModel expert) async {
     try {
-      List<Map<String, dynamic>> list = List<Map<String, dynamic>>.from(
-        (box.get('users', defaultValue: []) as List).map(
-          (item) => Map<String, dynamic>.from(item as Map),
-        ),
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
+        box.get('users', defaultValue: []),
       );
 
       // find index where email already exists
@@ -83,20 +71,7 @@ class AuthenticationServices {
       );
 
       if (index == -1) {
-        Map<String, dynamic> data = {
-          'id': expert.id,
-          'name': expert.name,
-          'email': expert.email,
-          'password': expert.password,
-          'profileImg': expert.profileImg,
-          'qualification': expert.qualifications,
-          'gender': expert.gender,
-          'desc': expert.desc,
-          'specialization': expert.specializations,
-          'role': 'Expert'
-        };
-
-        list.add(data);
+        list.add(expert.toMap());
         await box.put('users', list);
         return null;
       }
@@ -108,11 +83,8 @@ class AuthenticationServices {
 
   Future<String?> adminSignup(AdminModel admin) async {
     try {
-      List<Map<String, dynamic>> list = List<Map<String, dynamic>>.from(
-        (box.get('users', defaultValue: []) as List).map(
-          (item) => Map<String, dynamic>.from(item as Map),
-        ),
-      );
+      List<Map<dynamic, dynamic>> list =
+          List<Map<dynamic, dynamic>>.from(box.get('users', defaultValue: []));
 
       int index = list.indexWhere(
         (element) => element['email'] == admin.email,
@@ -122,7 +94,7 @@ class AuthenticationServices {
         return "Email already exists";
       }
 
-      Map<String, dynamic> data = {
+      Map<dynamic, dynamic> data = {
         'id': admin.id,
         'name': admin.name,
         'email': admin.email,
@@ -136,6 +108,10 @@ class AuthenticationServices {
     } catch (e) {
       return 'Error $e';
     }
+  }
+
+  Future<Map<dynamic, dynamic>> get session async {
+    return await box.get('session', defaultValue: {});
   }
 
   Future<String?> logOut() async {

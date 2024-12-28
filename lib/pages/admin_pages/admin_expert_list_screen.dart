@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:seujcare/models/expert_model.dart';
+import 'package:seujcare/pages/expert_pages/expert_profile_page.dart';
 import 'package:seujcare/providers/admin_provider.dart';
+import 'package:seujcare/services/auth_service.dart';
+import 'package:seujcare/utils/commons.dart';
 import 'package:seujcare/utils/constants.dart';
 import 'package:seujcare/widgets/admin/expert_list_card.dart';
 
@@ -17,14 +21,12 @@ class AdminExpertScreen extends StatefulWidget {
 class _AdminExpertScreenState extends State<AdminExpertScreen> {
   @override
   void initState() {
-    Provider.of<AdminProvider>(context, listen: false).expertList();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<AdminProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: kbgColor,
@@ -79,7 +81,13 @@ class _AdminExpertScreenState extends State<AdminExpertScreen> {
                 (index) {
                   return FadeInUp(
                       delay: const Duration(milliseconds: 50),
-                      child: GestureDetector(child: const ExpertListCard()));
+                      child: ExpertListCard(
+                        expertModel: provider.experts[index],
+                        onTap: () async {
+                          print(await AuthenticationServices().session);
+                          navigateToScreen(context, ExpertProfile());
+                        },
+                      ));
                 },
               )
           ],

@@ -10,10 +10,10 @@ class DashboardRepository {
     try {
       // List<Map<String, dynamic>> crops =
       //     List<Map<String, dynamic>>.from(box.get('crops', defaultValue: []));
-      List<Map<String, dynamic>> users =
-          List<Map<String, dynamic>>.from(box.get('users', defaultValue: []));
-      List<Map<String, dynamic>> queries =
-          List<Map<String, dynamic>>.from(box.get('queries', defaultValue: []));
+      List<Map<dynamic, dynamic>> users =
+          List<Map<dynamic, dynamic>>.from(box.get('users', defaultValue: []));
+      List<Map<dynamic, dynamic>> queries = List<Map<dynamic, dynamic>>.from(
+          box.get('queries', defaultValue: []));
 
       var farmers =
           users.where((element) => element['role'] == 'Farmer').toList();
@@ -37,14 +37,5 @@ class DashboardRepository {
           resolvedIssueCount: 0,
           createdIssueCount: 0);
     }
-  }
-
-  DashboardModel setDashboardData(DashboardModel data) {
-    return DashboardModel(
-        farmersCount: data.farmersCount,
-        expertsCount: data.expertsCount,
-        issuesCount: data.issuesCount,
-        resolvedIssueCount: data.resolvedIssueCount,
-        createdIssueCount: data.createdIssueCount);
   }
 }
