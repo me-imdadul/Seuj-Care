@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
 import 'package:seujcare/models/crop_disease_model.dart';
 import 'package:seujcare/pages/farmer_pages/ask_expert_screen.dart';
 import 'package:seujcare/pages/farmer_pages/crop_desease_screen.dart';
@@ -12,6 +14,7 @@ import 'package:seujcare/pages/farmer_pages/post_screen.dart';
 import 'package:seujcare/pages/farmer_pages/product_screen.dart';
 import 'package:seujcare/pages/farmer_pages/profile_screen.dart';
 import 'package:seujcare/pages/farmer_pages/season_details_screen.dart';
+import 'package:seujcare/providers/crop_provider.dart';
 import 'package:seujcare/services/auth_service.dart';
 import 'package:seujcare/widgets/home_screen_widgets/home_category_widget.dart';
 import 'package:seujcare/widgets/home_screen_widgets/home_trending_card_widget.dart';
@@ -30,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<CropProvider>(context, listen: false);
     return Scaffold(
       endDrawer: const AppDrawer(),
       appBar: AppBar(
@@ -58,29 +62,36 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Gap(20),
+            const Gap(20),
             const SearchWidget(),
-            SectionTitle(title: 'Crops'),
+            const SectionTitle(title: 'Crops'),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                const Gap(15),
-                ...List.generate(
-                  5,
-                  (index) {
-                    return HomeCategory(
-                      image:
-                          "https://media.istockphoto.com/id/622925154/photo/ripe-rice-in-the-field-of-farmland.jpg?s=2048x2048&w=is&k=20&c=auNzfGt6fX1e_w2fvW0CgyRURKMGiL-P2ZnwA8tw1ic=",
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const CropDetailsScreen(),
-                      )),
-                      text1: cropslist[index],
-                    );
-                  },
-                ),
-                const Gap(15),
-              ]),
+              child: provider.crops.isEmpty
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(child: Text('No Data Found')))
+                  : Row(children: [
+                      const Gap(15),
+                      ...List.generate(
+                        provider.crops.length,
+                        (index) {
+                          return HomeCategory(
+                            // image:
+                            //     "https://media.istockphoto.com/id/622925154/photo/ripe-rice-in-the-field-of-farmland.jpg?s=2048x2048&w=is&k=20&c=auNzfGt6fX1e_w2fvW0CgyRURKMGiL-P2ZnwA8tw1ic=",
+                            image: provider.crops[index].cropUrl,
+                            onTap: () =>
+                                Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => const CropDetailsScreen(),
+                            )),
+                            text1: provider.crops[index].name,
+                          );
+                        },
+                      ),
+                      const Gap(15),
+                    ]),
             ),
             const Gap(15),
             const SectionTitle(
@@ -89,92 +100,117 @@ class _HomeScreenState extends State<HomeScreen> {
             const Gap(15),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(children: [
-                  ...List.generate(
-                    5,
-                    (index) {
-                      return TrendingCard(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => ArticleScreen(),
-                          ));
-                        },
-                        index: index,
-                      );
-                    },
-                  ),
-                ]),
-              ),
+              child: provider.cropDiseases.isEmpty
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(child: Text('No Data Found')))
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Row(children: [
+                        ...List.generate(
+                          provider.cropDiseases.length,
+                          (index) {
+                            return TrendingCard(
+                              cropDisease: provider.cropDiseases[index],
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => const ArticleScreen(),
+                                ));
+                              },
+                              index: index,
+                            );
+                          },
+                        ),
+                      ]),
+                    ),
             ),
             const Gap(20),
-            const SectionTitle(
-              title: 'Crops',
-            ),
-            const Gap(15),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                const Gap(15),
-                ...List.generate(
-                  5,
-                  (index) {
-                    return HomeCategory(
-                      text1: cropslist[index],
-                      image:
-                          'https://gardenseason.com/wp-content/uploads/2020/04/Garden-in-late-summer-_-summer-garden-crops-_-ss-_-featured.jpg',
-                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const ProductDetailsScreen(),
-                      )),
-                    );
-                  },
-                ),
-                const Gap(15),
-              ]),
-            ),
-            Gap(15),
+            // const SectionTitle(
+            //   title: 'Crops',
+            // ),
+            // const Gap(15),
+            // SingleChildScrollView(
+            //   scrollDirection: Axis.horizontal,
+            //   child: Row(children: [
+            //     const Gap(15),
+            //     ...List.generate(
+            //       5,
+            //       (index) {
+            //         return HomeCategory(
+            //           text1: cropslist[index],
+            //           image:
+            //               'https://gardenseasons.com/wp-content/uploads/2020/04/Garden-in-late-summer-_-summer-garden-crops-_-ss-_-featured.jpg',
+            //           onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            //             builder: (context) => const ProductDetailsScreen(),
+            //           )),
+            //         );
+            //       },
+            //     ),
+            //     const Gap(15),
+            //   ]),
+            // ),
+            // const Gap(15),
             const SectionTitle(
               title: 'Seasonal',
             ),
             const Gap(10),
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: Row(children: [
-                const Gap(15),
-                ...List.generate(
-                  5,
-                  (index) {
-                    List<String> seasons = [
-                      "Summer",
-                      "Autumn",
-                      "Winter",
-                      "Rainy",
-                      "Fall"
-                    ];
-                    return Card(
-                      elevation: 2,
-                      margin: EdgeInsets.symmetric(horizontal: 6, vertical: 7),
-                      child: Column(
-                        children: [
-                          ClipRRect(
-                              borderRadius: BorderRadius.circular(15),
-                              child: Image.network(
-                                  height: 120,
-                                  width: 160,
-                                  fit: BoxFit.cover,
-                                  'https://www.factsmostly.com/wp-content/uploads/2024/08/Summer-Season.webp')),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: Text(seasons[index]),
-                          )
-                        ],
+              child: provider.seasons.isEmpty
+                  ? SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Center(child: const Text('No Data Found')))
+                  : Row(children: [
+                      const Gap(15),
+                      ...List.generate(
+                        provider.seasons.length,
+                        (index) {
+                          return Container(
+                            height: 120,
+                            width: 200,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                      color: Colors.grey.shade200,
+                                      spreadRadius: 2,
+                                      blurRadius: 4,
+                                      offset: Offset(3, 3))
+                                ],
+                                borderRadius: BorderRadius.circular(20)),
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 7),
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: Image.network(
+                                      height: 120,
+                                      width: 200,
+                                      fit: BoxFit.cover,
+                                      provider.seasons[index].image,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return SizedBox(
+                                            height: 60,
+                                            child: const Icon(Iconsax.image5));
+                                      },
+                                    )),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 10),
+                                  child: Text(
+                                    provider.seasons[index].name,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
-                const Gap(15),
-              ]),
+                      const Gap(15),
+                    ]),
             ),
             const Gap(40),
             Padding(
@@ -187,11 +223,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 )),
                 child: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 18),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 18),
                   height: 100,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Color.fromARGB(255, 236, 238, 235)),
+                      color: const Color.fromARGB(255, 236, 238, 235)),
                   child: Image.network(
                       height: 30,
                       "http://www.askexperts.pro/wp-content/uploads/2024/01/logo.png"),

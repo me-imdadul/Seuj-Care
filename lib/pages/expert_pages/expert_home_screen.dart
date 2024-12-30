@@ -1,14 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:seujcare/pages/expert_pages/query_detail_screen.dart';
+import 'package:seujcare/providers/expert_provider.dart';
 import 'package:seujcare/utils/constants.dart';
 import 'package:seujcare/widgets/expert/query_card_widget.dart';
 
-class ExpertHomeScreen extends StatelessWidget {
+class ExpertHomeScreen extends StatefulWidget {
   const ExpertHomeScreen({super.key});
 
   @override
+  State<ExpertHomeScreen> createState() => _ExpertHomeScreenState();
+}
+
+class _ExpertHomeScreenState extends State<ExpertHomeScreen> {
+  Box box = Hive.box('myBox');
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    Provider.of<ExpertProvider>(context, listen: false)
+        .assignedQueries(box.get('session', defaultValue: {})['email']);
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<ExpertProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -34,11 +58,11 @@ class ExpertHomeScreen extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            '34',
+                            provider.assigned.length.toString(),
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -66,11 +90,11 @@ class ExpertHomeScreen extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
                       ),
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            '34',
+                            provider.completed.toString(),
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -102,22 +126,32 @@ class ExpertHomeScreen extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  ...List.generate(
-                    5,
-                    (index) {
-                      return QueryCardWidget(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => IssueDetailScreen(),
-                          ));
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ),
+              child: provider.assigned.isEmpty
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: Text('No Data Found'),
+                      ),
+                    )
+                  : Column(
+                      children: [
+                        ...List.generate(
+                          provider.assigned.length,
+                          (index) {
+                            return QueryCardWidget(
+                              model: provider.assigned[index],
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => IssueDetailScreen(
+                                    model: provider.assigned[index],
+                                  ),
+                                ));
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
             ),
           ],
         ),

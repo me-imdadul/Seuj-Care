@@ -7,8 +7,8 @@ class ChatRepository {
   // Send Chat Message
   Future<String?> sendMessage(ChatModel chat) async {
     try {
-      List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(box.get('messages'));
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
+          box.get('messages', defaultValue: []));
       list.add(chat.toMap());
       await box.put('messages', list);
       return null;
@@ -21,7 +21,7 @@ class ChatRepository {
   Future<List<ChatModel>> fetchChatHistory(
       String userId, String contactId) async {
     try {
-      List<Map<String, dynamic>> list = List<Map<String, dynamic>>.from(
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
           box.get('messages', defaultValue: []));
 
       var lists = list.where((chat) =>

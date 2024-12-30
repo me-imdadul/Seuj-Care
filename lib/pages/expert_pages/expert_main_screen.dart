@@ -18,7 +18,9 @@ class _ExpertMainScreenState extends State<ExpertMainScreen> {
   List<Widget> pages = [
     ExpertHomeScreen(),
     IssueAssignedScreen(),
-    ExpertProfile()
+    ExpertProfile(
+      isAdmin: false,
+    )
   ];
 
   @override

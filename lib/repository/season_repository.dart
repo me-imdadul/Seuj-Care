@@ -6,8 +6,8 @@ class SeasonRepository {
 
   Future<String?> insertSeason(SeasonModel season) async {
     try {
-      List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(box.get('seasons', defaultValue: []));
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
+          box.get('seasons', defaultValue: []));
       list.add(season.toMap());
       await box.put('seasons', list);
       return null;
@@ -18,8 +18,8 @@ class SeasonRepository {
 
   Future<String?> updateSeason(int index, SeasonModel season) async {
     try {
-      List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(box.get('seasons', defaultValue: []));
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
+          box.get('seasons', defaultValue: []));
 
       list[index] = season.toMap();
 
@@ -32,8 +32,8 @@ class SeasonRepository {
 
   Future<String?> deleteSeason(int index) async {
     try {
-      List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(box.get('seasons', defaultValue: []));
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
+          box.get('seasons', defaultValue: []));
 
       list.removeAt(index);
       await box.put('seasons', list);
@@ -46,8 +46,8 @@ class SeasonRepository {
 
   List<SeasonModel> get allSeasons {
     try {
-      List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(box.get('seasons', defaultValue: []));
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
+          box.get('seasons', defaultValue: []));
       return list.map((map) => SeasonModel.fromMap(map)).toList();
     } catch (e) {
       return [];

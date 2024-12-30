@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:seujcare/models/query_model.dart';
 
 class QueryCardWidget extends StatelessWidget {
   final VoidCallback onTap;
-  const QueryCardWidget({super.key, required this.onTap});
+  final QueryModel model;
+  const QueryCardWidget({super.key, required this.onTap, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +15,15 @@ class QueryCardWidget extends StatelessWidget {
         padding: const EdgeInsets.all(6),
         margin: EdgeInsets.symmetric(vertical: 5),
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-        ),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.grey.shade200,
+                  blurRadius: 4,
+                  spreadRadius: 3,
+                  offset: Offset(3, 3))
+            ]),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: [
@@ -36,20 +44,24 @@ class QueryCardWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Farmer name',
+                        model.createdBy,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        '24 Jul, 2024',
-                        style: TextStyle(fontSize: 12),
-                      )
+                      // Text(
+                      //   model.timestamp.toString(),
+                      //   style: TextStyle(fontSize: 12),
+                      // )
                     ],
                   ),
                   Gap(1),
-                  Text('Lorem ipsum')
+                  Text(
+                    model.query,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  )
                 ],
               ),
             )

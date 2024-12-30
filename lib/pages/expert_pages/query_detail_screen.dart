@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:provider/provider.dart';
+import 'package:seujcare/models/query_model.dart';
+import 'package:seujcare/pages/expert_pages/expert_chat_screen.dart';
+import 'package:seujcare/providers/chat_provider.dart';
+import 'package:seujcare/providers/query_provider.dart';
+import 'package:seujcare/utils/commons.dart';
 
 class IssueDetailScreen extends StatelessWidget {
-  const IssueDetailScreen({super.key});
+  final QueryModel model;
+  const IssueDetailScreen({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<QueryProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -20,11 +28,11 @@ class IssueDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'User',
+                  model.createdBy,
                   style: TextStyle(fontSize: 18),
                 ),
                 Text(
-                  '12 jul, 2024 12;11 pm',
+                  model.timestamp.toString(),
                   style: TextStyle(fontSize: 12),
                 ),
               ],
@@ -55,7 +63,7 @@ class IssueDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Query Title here',
+                  model.queryId,
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
               ],
@@ -72,7 +80,7 @@ class IssueDetailScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 Text(
-                  'Crop Disease',
+                  model.category,
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
@@ -93,7 +101,7 @@ class IssueDetailScreen extends StatelessWidget {
                 ),
                 Gap(13),
                 Text(
-                  'n array of messages to be rendered. Accepts abstract message, see types. If you have your message types you will need to map those to any of the defined ones. Let us know if we need to add more message types or add more fields to the existing ones.',
+                  model.query,
                   style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
@@ -111,7 +119,13 @@ class IssueDetailScreen extends StatelessWidget {
               minWidth: double.infinity,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
-              onPressed: () {},
+              onPressed: () {
+                navigateToScreen(
+                    context,
+                    ExpertChatScreen(
+                      model: model,
+                    ));
+              },
               child: const Text(
                 'Chat now!',
                 style: TextStyle(color: Colors.white, fontSize: 18),

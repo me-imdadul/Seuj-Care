@@ -1,67 +1,61 @@
 import 'package:hive/hive.dart';
-import 'package:seujcare/models/crop_disease_model.dart';
+import 'package:seujcare/models/crop_model.dart';
+import 'package:seujcare/models/disease_model.dart';
 
-class CropDiseaseRepository {
+class CropRepository {
   final Box box = Hive.box('myBox');
 
-  Future<String?> addCropDisease(CropDiseaseModel cropDisease) async {
+  /// Insert a new disease
+  Future<String?> addCrop(CropModel crop) async {
     try {
-      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(box
-          .get('cropDisease', defaultValue: []).cast<Map<dynamic, dynamic>>());
-      list.add(cropDisease.toMap());
-      await box.put('cropDisease', list);
+      List<Map<dynamic, dynamic>> list =
+          List<Map<dynamic, dynamic>>.from(box.get('crops', defaultValue: []));
+
+      list.add(crop.toMap());
+      await box.put('crops', list);
       return null;
     } catch (e) {
-      return "Something went wrong adding crops. $e";
+      return "Something went wrong. $e";
     }
   }
 
-  List<CropDiseaseModel> getCrops() {
+  /// Delete a disease by index
+  Future<String?> deleteCrop(int index) async {
     try {
-      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
-          box.get('cropDisease', defaultValue: []));
+      List<Map<dynamic, dynamic>> list =
+          List<Map<dynamic, dynamic>>.from(box.get('crops', defaultValue: []));
 
-      return list
-          .map((cropDisease) => CropDiseaseModel.fromMap(cropDisease))
-          .toList();
+      list.removeAt(index);
+      await box.put('crops', list);
+      return null;
     } catch (e) {
-      print('Something wrong while fetching crop diseases $e');
+      return "Something went wrong. $e";
+    }
+  }
+
+  /// Retrieve all diseases
+  List<CropModel> get cropList {
+    try {
+      List<Map<dynamic, dynamic>> list =
+          List<Map<dynamic, dynamic>>.from(box.get('crops', defaultValue: []));
+      return list.map((map) => CropModel.fromMap(map)).toList();
+    } catch (e) {
       return [];
     }
   }
 
-  Future<String?> updateCropDisease(
-      int index, CropDiseaseModel updatedCropDisease) async {
+  /// Update a disease by index
+  Future<String?> updateCrop(int index, CropModel crop) async {
     try {
-      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
-          box.get('cropDisease', defaultValue: []));
+      List<Map<dynamic, dynamic>> list =
+          List<Map<dynamic, dynamic>>.from(box.get('crops', defaultValue: []));
 
-      if (index >= 0 && index < list.length) {
-        list[index] = updatedCropDisease.toMap();
-        await box.put('cropDisease', list);
-        return null;
-      } else {
-        return "Invalid index";
-      }
+      list[index] = crop.toMap();
+
+      await box.put('crops', list);
+      return null;
     } catch (e) {
-      return "Error: $e";
-    }
-  }
-
-  Future<String?> deleteCropDisease(int index) async {
-    try {
-      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
-          box.get('cropDisease', defaultValue: []));
-
-      if (index >= 0 && index < list.length) {
-        list.removeAt(index);
-        await box.put('cropDisease', list);
-        return null;
-      } else {
-        return "Invalid index";
-      }
-    } catch (e) {
-      return "Error: $e";
+      return "Something went wrong. $e";
     }
   }
 }

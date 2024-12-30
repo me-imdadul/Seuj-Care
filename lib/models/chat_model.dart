@@ -15,8 +15,8 @@ class ChatModel {
     required this.timestamp,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+  Map<dynamic, dynamic> toMap() {
+    return <dynamic, dynamic>{
       'senderId': senderId,
       'receiverId': receiverId,
       'message': message,
@@ -25,7 +25,7 @@ class ChatModel {
     };
   }
 
-  factory ChatModel.fromMap(Map<String, dynamic> map) {
+  factory ChatModel.fromMap(Map<dynamic, dynamic> map) {
     return ChatModel(
       senderId: map['senderId'] as String,
       receiverId: map['receiverId'] as String,
@@ -38,5 +38,5 @@ class ChatModel {
   String toJson() => json.encode(toMap());
 
   factory ChatModel.fromJson(String source) =>
-      ChatModel.fromMap(json.decode(source) as Map<String, dynamic>);
+      ChatModel.fromMap(json.decode(source) as Map<dynamic, dynamic>);
 }

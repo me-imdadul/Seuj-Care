@@ -49,8 +49,8 @@ class CropModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+  Map<dynamic, dynamic> toMap() {
+    return <dynamic, dynamic>{
       'name': name,
       'description': description,
       'season': season,
@@ -63,7 +63,7 @@ class CropModel {
     };
   }
 
-  factory CropModel.fromMap(Map<String, dynamic> map) {
+  factory CropModel.fromMap(Map<dynamic, dynamic> map) {
     return CropModel(
       name: map['name'] as String,
       description: map['description'] as String,
@@ -81,5 +81,5 @@ class CropModel {
   String toJson() => json.encode(toMap());
 
   factory CropModel.fromJson(String source) =>
-      CropModel.fromMap(json.decode(source) as Map<String, dynamic>);
+      CropModel.fromMap(json.decode(source) as Map<dynamic, dynamic>);
 }

@@ -3,6 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:hive/hive.dart';
 import 'package:seujcare/models/expert_model.dart';
 import 'package:seujcare/models/farmer_model.dart';
+import 'package:seujcare/pages/admin_pages/admin_main_screen.dart';
 import 'package:seujcare/pages/expert_pages/expert_main_screen.dart';
 import 'package:seujcare/pages/farmer_pages/home_screen.dart';
 import 'package:seujcare/pages/farmer_pages/language_select_screen.dart';
@@ -90,6 +91,11 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 20.0),
             MaterialButton(
+              onLongPress: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const AdminMainScreen(),
+                ));
+              },
               onPressed: () async {
                 final emailText = email.text.toLowerCase().trim();
                 print(emailText);

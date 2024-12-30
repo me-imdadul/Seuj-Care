@@ -6,7 +6,7 @@ class QueryModel {
   final String category;
   final String image;
   final String query;
-  final String resolvedBy;
+  final String assignedTo;
   final String queryId;
   final String status;
   final String createdBy;
@@ -16,39 +16,39 @@ class QueryModel {
     required this.image,
     required this.status,
     required this.query,
-    required this.resolvedBy,
+    required this.assignedTo,
     required this.queryId,
     required this.createdBy,
     required this.timestamp,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+  Map<dynamic, dynamic> toMap() {
+    return <dynamic, dynamic>{
       'category': category,
       'image': image,
       'query': query,
-      'resolvedBy': resolvedBy,
+      'assignedTo': assignedTo,
       'queryId': queryId,
       'createdBy': createdBy,
       'timestamp': timestamp.millisecondsSinceEpoch,
     };
   }
 
-  factory QueryModel.fromMap(Map<String, dynamic> map) {
+  factory QueryModel.fromMap(Map<dynamic, dynamic> map) {
     return QueryModel(
-      category: map['category'] as String,
-      image: map['image'] as String,
-      query: map['query'] as String,
-      status: map['status'] as String,
-      resolvedBy: map['resolvedBy'] as String,
-      queryId: map['queryId'] as String,
-      createdBy: map['createdBy'] as String,
-      timestamp: DateTime.fromMillisecondsSinceEpoch(map['timestamp'] as int),
+      category: map['category'] ?? "",
+      image: map['image'] ?? "",
+      query: map['query'] ?? "",
+      status: map['status'] ?? "",
+      assignedTo: map['assignedTo'] ?? "",
+      queryId: map['queryId'] ?? "",
+      createdBy: map['createdBy'] ?? "",
+      timestamp: DateTime.fromMillisecondsSinceEpoch(map['timestamp']),
     );
   }
 
   String toJson() => json.encode(toMap());
 
   factory QueryModel.fromJson(String source) =>
-      QueryModel.fromMap(json.decode(source) as Map<String, dynamic>);
+      QueryModel.fromMap(json.decode(source) as Map<dynamic, dynamic>);
 }

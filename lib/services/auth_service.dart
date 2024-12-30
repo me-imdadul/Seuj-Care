@@ -14,9 +14,6 @@ class AuthenticationServices {
 
       // Find the index of the farmer by email
       int emailIndex = list.indexWhere((element) => element['email'] == email);
-
-      print(list.toString());
-
       // Ensure the email exists
       if (emailIndex == -1) {
         return 'No Account Found. Create new!'; // Email not found

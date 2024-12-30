@@ -27,8 +27,8 @@ class SeasonModel {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+  Map<dynamic, dynamic> toMap() {
+    return <dynamic, dynamic>{
       'name': name,
       'information': information,
       'image': image,
@@ -36,7 +36,7 @@ class SeasonModel {
     };
   }
 
-  factory SeasonModel.fromMap(Map<String, dynamic> map) {
+  factory SeasonModel.fromMap(Map<dynamic, dynamic> map) {
     return SeasonModel(
         name: map['name'] as String,
         information: map['information'] as String,
@@ -49,5 +49,5 @@ class SeasonModel {
   String toJson() => json.encode(toMap());
 
   factory SeasonModel.fromJson(String source) =>
-      SeasonModel.fromMap(json.decode(source) as Map<String, dynamic>);
+      SeasonModel.fromMap(json.decode(source) as Map<dynamic, dynamic>);
 }

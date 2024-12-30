@@ -6,8 +6,8 @@ class QueryRepository {
 
   Future<String?> createNewQuery(QueryModel query) async {
     try {
-      List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(box.get('queries'));
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
+          box.get('queries', defaultValue: []));
       list.add(query.toMap());
       await box.put('queries', list);
       return null;
@@ -16,11 +16,15 @@ class QueryRepository {
     }
   }
 
-  Future<String?> resolveQuery(QueryModel query) async {
+  Future<String?> updateQuery(String queryId, QueryModel query) async {
     try {
-      List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(box.get('queries'));
-      list.add(query.toMap());
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
+          box.get('queries', defaultValue: []));
+
+      int index = list.indexWhere((element) => element['queryId'] == queryId);
+
+      list[index] = query.toMap();
+
       await box.put('queries', list);
       return null;
     } catch (e) {
@@ -30,7 +34,7 @@ class QueryRepository {
 
   Future<String?> deleteQuery(String id) async {
     try {
-      List<Map<String, dynamic>> list = box.get('queries', defaultValue: [])!;
+      List<Map<dynamic, dynamic>> list = box.get('queries', defaultValue: [])!;
       list.removeWhere((f) => f['queryId'] == id);
       await box.put('queries', list);
       return null;
@@ -40,8 +44,8 @@ class QueryRepository {
   }
 
   Future<QueryModel> getQueryDetails(String queryId) async {
-    List<Map<String, dynamic>> list =
-        List<Map<String, dynamic>>.from(box.get('queries'));
+    List<Map<dynamic, dynamic>> list =
+        List<Map<dynamic, dynamic>>.from(box.get('queries', defaultValue: []));
 
     int filteredList =
         list.indexWhere((element) => element['queryId'] == queryId);
@@ -49,12 +53,34 @@ class QueryRepository {
     return querydetail;
   }
 
-  List<Map<String, dynamic>> get queryList {
+  Future<List<QueryModel>> getAssignedQuery(String userId) async {
+    List<Map<dynamic, dynamic>> list =
+        List<Map<dynamic, dynamic>>.from(box.get('queries', defaultValue: []));
+
+    var filteredList = list.where((element) => element['assignedTo'] == userId);
+    var querydetail = filteredList.map((e) => QueryModel.fromMap(e)).toList();
+    return querydetail;
+  }
+
+  Future<List<QueryModel>> getCompletedQuery(String status) async {
+    List<Map<dynamic, dynamic>> list =
+        List<Map<dynamic, dynamic>>.from(box.get('queries', defaultValue: []));
+
+    var filteredList = list.where((element) => element['status'] == status);
+    var querydetail = filteredList.map((e) => QueryModel.fromMap(e)).toList();
+    return querydetail;
+  }
+
+  List<QueryModel> get queryList {
     try {
-      List<Map<String, dynamic>> list =
-          List<Map<String, dynamic>>.from(box.get('queries'));
-      return list;
+      List<Map<dynamic, dynamic>> list = List<Map<dynamic, dynamic>>.from(
+          box.get('queries', defaultValue: []));
+
+      var result = list.map((e) => QueryModel.fromMap(e)).toList();
+
+      return result;
     } catch (e) {
+      print(e);
       return [];
     }
   }

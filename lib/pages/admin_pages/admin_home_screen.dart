@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:provider/provider.dart';
+import 'package:seujcare/pages/admin_pages/add_season_screen.dart';
 import 'package:seujcare/pages/admin_pages/farmer_issue_screen.dart';
 import 'package:seujcare/providers/admin_provider.dart';
 import 'package:seujcare/repository/dashboard_repository.dart';
+import 'package:seujcare/utils/commons.dart';
 import 'package:seujcare/utils/constants.dart';
 
 class AdminHomeScreen extends StatefulWidget {
@@ -20,7 +22,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
   List<String> categories = [
     "Overview",
     "Issues",
-    "Crops",
+    "Season",
     "Farmers",
     "Trending"
   ];
@@ -71,21 +73,26 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                       curve: Curves.ease,
                       delay: Duration(milliseconds: index * 200),
                       child: GestureDetector(
+                          onTap: () {
+                            if (index == 2) {
+                              navigateToScreen(context, AddSeasonScreen());
+                            }
+                          },
                           child: Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 14),
-                        decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Text(
-                          categories[index],
-                          style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white),
-                        ),
-                      )),
+                            margin: const EdgeInsets.only(right: 10),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 14),
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Text(
+                              categories[index],
+                              style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white),
+                            ),
+                          )),
                     ),
                   )
                 ],
@@ -174,7 +181,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 style: const TextStyle(
                                     fontSize: 28,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.green),
+                                    color: Colors.orange),
                               ),
                               const Text(
                                 'Experts',
@@ -211,7 +218,7 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                                 style: const TextStyle(
                                     fontSize: 28,
                                     fontWeight: FontWeight.w600,
-                                    color: Colors.green),
+                                    color: Colors.blue),
                               ),
                               const Text(
                                 'Issues',
@@ -234,32 +241,37 @@ class _AdminHomeScreenState extends State<AdminHomeScreen> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20)),
                 height: 300,
-                child: PieChart(
-                  holeSize: 0.4,
-                  data: Series(
-                    data: {
-                      'Farmers': provider.data.farmersCount,
-                      'Experts': provider.data.expertsCount,
-                      'Issues': provider.data.issuesCount
-                    },
-                    colorAccessor: (domain, value) {
-                      if (domain == 'Farmers') {
-                        return Colors.green;
-                      } else if (domain == 'Experts') {
-                        return Colors.orange;
-                      }
+                child: provider.data.expertsCount == 0 &&
+                        provider.data.issuesCount == 0
+                    ? Center(
+                        child: Text('No Enough Data Available'),
+                      )
+                    : PieChart(
+                        holeSize: 0.4,
+                        data: Series(
+                          data: {
+                            'Farmers': provider.data.farmersCount,
+                            'Experts': provider.data.expertsCount,
+                            'Issues': provider.data.issuesCount
+                          },
+                          colorAccessor: (domain, value) {
+                            if (domain == 'Farmers') {
+                              return Colors.green;
+                            } else if (domain == 'Experts') {
+                              return Colors.orange;
+                            }
 
-                      return Colors.blue;
-                    },
-                    measureAccessor: (value) => value.toDouble(),
-                    labelAccessor: (domain, value, percent) => ChartLabel(
-                      '${percent}%',
-                      style: const TextStyle(fontSize: 10),
-                    ),
-                  ),
-                  animationCurve: Curves.bounceIn,
-                  animationDuration: const Duration(milliseconds: 1500),
-                ),
+                            return Colors.blue;
+                          },
+                          measureAccessor: (value) => value.toDouble(),
+                          labelAccessor: (domain, value, percent) => ChartLabel(
+                            '${percent}%',
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                        ),
+                        animationCurve: Curves.bounceIn,
+                        animationDuration: const Duration(milliseconds: 1500),
+                      ),
               ),
             ),
             const Gap(25),

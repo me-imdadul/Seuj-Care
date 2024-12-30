@@ -115,11 +115,6 @@ class _SplashScreenState extends State<SplashScreen> {
                     builder: (context) => const LoginPage(),
                   ));
                 },
-                onLongPress: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const AdminMainScreen(),
-                  ));
-                },
                 child: Text(
                   'Login Now',
                   style: TextStyle(

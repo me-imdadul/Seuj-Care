@@ -1,127 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:seujcare/providers/crop_provider.dart';
 
-class CropListScreen extends StatelessWidget {
+class CropListScreen extends StatefulWidget {
+  const CropListScreen({super.key});
+
+  @override
+  State<CropListScreen> createState() => _CropListScreenState();
+}
+
+class _CropListScreenState extends State<CropListScreen> {
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<CropProvider>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Colors.green.shade800,
-        title: Text("Crops"),
+        title: const Text("Crops"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            CropCard(
-              cropName: "Tomato",
-              imageUrl:
-                  "https://www.shutterstock.com/shutterstock/photos/2509533753/display_1500/stock-photo-corn-cobs-in-corn-farming-fields-during-the-harvest-season-can-be-used-for-roasted-corn-or-staple-2509533753.jpg",
-              season: "Summer",
-              description:
-                  "Grows well in warm climates. Harvest within 70-80 days.",
-            ),
-            CropCard(
-              cropName: "Wheat",
-              imageUrl:
-                  "https://www.shutterstock.com/shutterstock/photos/2509533753/display_1500/stock-photo-corn-cobs-in-corn-farming-fields-during-the-harvest-season-can-be-used-for-roasted-corn-or-staple-2509533753.jpg",
-              season: "Winter",
-              description: "Thrives in cool weather. Harvest in 120 days.",
-            ),
-            CropCard(
-              cropName: "Rice",
-              imageUrl:
-                  "https://www.shutterstock.com/shutterstock/photos/2509533753/display_1500/stock-photo-corn-cobs-in-corn-farming-fields-during-the-harvest-season-can-be-used-for-roasted-corn-or-staple-2509533753.jpg",
-              season: "Monsoon",
-              description: "Requires plenty of water. Harvest after 150 days.",
-            ),
-            CropCard(
-              cropName: "Corn",
-              imageUrl:
-                  "https://www.fitterfly.com/blog/wp-content/uploads/2024/07/Is-Onion-Good-for-Diabetes-Types-Benefits-Side-Effects-and-More.webp",
-              season: "Spring",
-              description: "Ideal for spring planting. Harvest after 90 days.",
-            ),
-            CropCard(
-              cropName: "Potato",
-              imageUrl:
-                  "https://www.fitterfly.com/blog/wp-content/uploads/2024/07/Is-Onion-Good-for-Diabetes-Types-Benefits-Side-Effects-and-More.webp",
-              season: "Winter",
-              description: "Best in cold climates. Harvest in 100 days.",
-            ),
-            CropCard(
-              cropName: "Onion",
-              imageUrl:
-                  "https://www.fitterfly.com/blog/wp-content/uploads/2024/07/Is-Onion-Good-for-Diabetes-Types-Benefits-Side-Effects-and-More.webp",
-              season: "Winter",
-              description: "Thrives in moderate weather. Harvest in 110 days.",
-            ),
-            CropCard(
-              cropName: "Soybean",
-              imageUrl:
-                  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Vehn%C3%A4pelto_6.jpg/330px-Vehn%C3%A4pelto_6.jpg",
-              season: "Summer",
-              description: "Requires hot climate. Harvest in 120 days.",
-            ),
-            CropCard(
-              cropName: "Cotton",
-              imageUrl:
-                  "https://www.fitterfly.com/blog/wp-content/uploads/2024/07/Is-Onion-Good-for-Diabetes-Types-Benefits-Side-Effects-and-More.webp",
-              season: "Summer",
-              description: "Prefers warm weather. Harvest in 160 days.",
-            ),
-            CropCard(
-              cropName: "Sugarcane",
-              imageUrl:
-                  "https://www.fitterfly.com/blog/wp-content/uploads/2024/07/Is-Onion-Good-for-Diabetes-Types-Benefits-Side-Effects-and-More.webp",
-              season: "Year-round",
-              description: "Long growth cycle. Harvest in 12 months.",
-            ),
-            CropCard(
-              cropName: "Barley",
-              imageUrl:
-                  "https://www.fitterfly.com/blog/wp-content/uploads/2024/07/Is-Onion-Good-for-Diabetes-Types-Benefits-Side-Effects-and-More.webp",
-              season: "Winter",
-              description: "Grows in cool climates. Harvest in 90 days.",
-            ),
-            CropCard(
-              cropName: "Peas",
-              imageUrl:
-                  "https://www.shutterstock.com/shutterstock/photos/2509533753/display_1500/stock-photo-corn-cobs-in-corn-farming-fields-during-the-harvest-season-can-be-used-for-roasted-corn-or-staple-2509533753.jpg",
-              season: "Spring",
-              description: "Perfect for spring planting. Harvest in 60 days.",
-            ),
-            CropCard(
-              cropName: "Mango",
-              imageUrl:
-                  "https://www.shutterstock.com/shutterstock/photos/2509533753/display_1500/stock-photo-corn-cobs-in-corn-farming-fields-during-the-harvest-season-can-be-used-for-roasted-corn-or-staple-2509533753.jpg",
-              season: "Summer",
-              description:
-                  "Requires tropical climate. Harvest after flowering.",
-            ),
-            CropCard(
-              cropName: "Pineapple",
-              imageUrl:
-                  "https://www.shutterstock.com/shutterstock/photos/2509533753/display_1500/stock-photo-corn-cobs-in-corn-farming-fields-during-the-harvest-season-can-be-used-for-roasted-corn-or-staple-2509533753.jpg",
-              season: "Year-round",
-              description: "Takes time to grow. Harvest in 18 months.",
-            ),
-            CropCard(
-              cropName: "Chili",
-              imageUrl:
-                  "https://www.shutterstock.com/shutterstock/photos/2509533753/display_1500/stock-photo-corn-cobs-in-corn-farming-fields-during-the-harvest-season-can-be-used-for-roasted-corn-or-staple-2509533753.jpg",
-              season: "Summer",
-              description: "Prefers hot climate. Harvest in 100 days.",
-            ),
-            CropCard(
-              cropName: "Carrot",
-              imageUrl:
-                  "https://www.shutterstock.com/shutterstock/photos/2509533753/display_1500/stock-photo-corn-cobs-in-corn-farming-fields-during-the-harvest-season-can-be-used-for-roasted-corn-or-staple-2509533753.jpg",
-              season: "Winter",
-              description: "Best grown in cool weather. Harvest in 90 days.",
-            ),
-          ],
-        ),
+        child: provider.crops.isEmpty
+            ? const Center(
+                child: Text('No Data Found'),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: provider.crops.length,
+                itemBuilder: (context, index) {
+                  return CropCard(
+                    cropName: provider.crops[index].name,
+                    imageUrl: provider.crops[index].cropUrl.isEmpty
+                        ? "https://www.shutterstock.com/shutterstock/photos/2509533753/display_1500/stock-photo-corn-cobs-in-corn-farming-fields-during-the-harvest-season-can-be-used-for-roasted-corn-or-staple-2509533753.jpg"
+                        : provider.crops[index].cropUrl,
+                    season: provider.crops[index].season,
+                    description: provider.crops[index].description,
+                  );
+                },
+              ),
       ),
     );
   }
@@ -134,6 +51,7 @@ class CropCard extends StatelessWidget {
   final String description;
 
   CropCard({
+    super.key,
     required this.cropName,
     required this.imageUrl,
     required this.season,

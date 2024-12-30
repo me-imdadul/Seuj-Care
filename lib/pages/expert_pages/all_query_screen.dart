@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
 import 'package:seujcare/pages/expert_pages/expert_chat_screen.dart';
+import 'package:seujcare/pages/expert_pages/expert_profile_page.dart';
+import 'package:seujcare/pages/expert_pages/query_detail_screen.dart';
+import 'package:seujcare/providers/expert_provider.dart';
 import 'package:seujcare/widgets/expert/query_card_widget.dart';
 
 class IssueAssignedScreen extends StatefulWidget {
@@ -14,9 +19,13 @@ class _IssueAssignedScreenState extends State<IssueAssignedScreen>
     with SingleTickerProviderStateMixin {
   late TabController controller;
 
+  Box box = Hive.box('myBox');
+
   @override
   void initState() {
     controller = TabController(length: 3, vsync: this);
+    Provider.of<ExpertProvider>(context, listen: false)
+        .assignedQueries(box.get('session', defaultValue: {})['email']);
     super.initState();
   }
 
@@ -49,7 +58,7 @@ class _IssueAssignedScreenState extends State<IssueAssignedScreen>
               children: [
                 _buildAllQueries(context),
                 _buildRecentChat(context),
-                _buildAllQueries(context),
+                _buildCompletedQueries(context),
               ],
             ),
           ),
@@ -59,27 +68,57 @@ class _IssueAssignedScreenState extends State<IssueAssignedScreen>
   }
 
   _buildAllQueries(BuildContext context) {
-    return Expanded(
-        child: SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            ...List.generate(
-              20,
-              (index) => QueryCardWidget(
-                onTap: () {},
+    var provider = Provider.of<ExpertProvider>(context, listen: false);
+    return SingleChildScrollView(
+      child: provider.assigned.length == 0
+          ? Center(child: Text('No Data Found'))
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  ...List.generate(
+                    provider.assigned.length,
+                    (index) => QueryCardWidget(
+                        model: provider.assigned[index],
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => IssueDetailScreen(
+                                    model: provider.assigned[index],
+                                  )));
+                        }),
+                  )
+                ],
               ),
-            )
-          ],
-        ),
-      ),
-    ));
+            ),
+    );
+  }
+
+  _buildCompletedQueries(BuildContext context) {
+    var provider = Provider.of<ExpertProvider>(context, listen: false);
+    var completed =
+        provider.assigned.where((element) => element.status == '1').toList();
+    return SingleChildScrollView(
+      child: completed.length == 0
+          ? Center(child: Text('No Data Found'))
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  ...List.generate(
+                    completed.length,
+                    (index) => QueryCardWidget(
+                      model: completed[index],
+                      onTap: () {},
+                    ),
+                  )
+                ],
+              ),
+            ),
+    );
   }
 
   _buildRecentChat(BuildContext context) {
-    return Expanded(
-        child: SingleChildScrollView(
+    return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Column(
@@ -88,9 +127,9 @@ class _IssueAssignedScreenState extends State<IssueAssignedScreen>
               100,
               (index) => GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ExpertChatScreen(),
-                  ));
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //   builder: (context) => ExpertChatScreen(),
+                  // ));
                 },
                 child: Container(
                   padding: EdgeInsets.only(bottom: 10),
@@ -157,6 +196,6 @@ class _IssueAssignedScreenState extends State<IssueAssignedScreen>
           ],
         ),
       ),
-    ));
+    );
   }
 }

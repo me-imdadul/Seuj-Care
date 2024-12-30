@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:seujcare/models/expert_model.dart';
 import 'package:seujcare/pages/expert_pages/edit_profile.dart';
 import 'package:seujcare/pages/farmer_pages/login_signup_screen.dart';
 import 'package:seujcare/services/auth_service.dart';
 import 'package:seujcare/utils/commons.dart';
 
 class ExpertProfile extends StatefulWidget {
+  final bool isAdmin;
   const ExpertProfile({
     super.key,
+    required this.isAdmin,
   });
 
   @override
@@ -28,20 +28,15 @@ class _ExpertProfileState extends State<ExpertProfile> {
         ),
         centerTitle: true,
         actions: [
-          FutureBuilder(
-              future: AuthenticationServices().session,
-              builder: (context, snapshot) {
-                if (snapshot.data!.isEmpty) {
-                  return Container();
-                }
-                return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const ExpertEditProfileScreen(),
-                      ));
-                    },
-                    child: const Icon(Icons.edit));
-              }),
+          widget.isAdmin
+              ? Container()
+              : GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ExpertEditProfileScreen(),
+                    ));
+                  },
+                  child: const Icon(Icons.edit)),
           Gap(20)
         ],
       ),
@@ -164,13 +159,9 @@ class _ExpertProfileState extends State<ExpertProfile> {
             ),
             Gap(60),
 
-            FutureBuilder(
-                future: AuthenticationServices().session,
-                builder: (context, snapshot) {
-                  if (snapshot.data!.isEmpty) {
-                    return Container();
-                  }
-                  return MaterialButton(
+            widget.isAdmin
+                ? Container()
+                : MaterialButton(
                     minWidth: double.infinity,
                     color: Colors.green,
                     height: 60,
@@ -184,8 +175,7 @@ class _ExpertProfileState extends State<ExpertProfile> {
                       'Log Out',
                       style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
-                  );
-                })
+                  )
           ],
         ),
       ),

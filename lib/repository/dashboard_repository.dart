@@ -27,7 +27,7 @@ class DashboardRepository {
           expertsCount: experts.length,
           issuesCount: queries.length,
           resolvedIssueCount: issuesResolved.length,
-          createdIssueCount: 10);
+          createdIssueCount: queries.length);
     } catch (e) {
       log('Something went wrong in fetching dashboard data. $e');
       return DashboardModel(

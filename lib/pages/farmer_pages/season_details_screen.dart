@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:seujcare/models/crop_model.dart';
+import 'package:seujcare/models/season_model.dart';
+import 'package:seujcare/providers/crop_provider.dart';
 
 class SeasonsInformationScreen extends StatelessWidget {
+  const SeasonsInformationScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
+    var provider = Provider.of<CropProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.green.shade50,
       appBar: AppBar(
@@ -12,118 +19,106 @@ class SeasonsInformationScreen extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Season Header with Image
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  const BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Image.network(
-                  'https://cdn.britannica.com/16/187216-050-CB57A09B/tomatoes-tomato-plant-Fruit-vegetable.jpg',
+        child: provider.seasons.isEmpty
+            ? Center(
+                child: Text('No Data Found'),
+              )
+            : Column(
+                children: List.generate(
+                provider.crops.length,
+                (index) => seasonListCard(provider.seasons[index]),
+              )),
+      ),
+    );
+  }
+
+  Container seasonListCard(SeasonModel season) {
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.shade300,
+                blurRadius: 4,
+                spreadRadius: 3,
+                offset: Offset(3, 3))
+          ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Season Header with Image
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                const BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 10,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.network(
+                season.image,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Image.network(
+                  "https://cdn.britannica.com/16/187216-050-CB57A09B/tomatoes-tomato-plant-Fruit-vegetable.jpg",
                   height: 200,
                   width: double.infinity,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            SizedBox(height: 16),
+          ),
+          const SizedBox(height: 16),
 
-            // Season Name and Description
-            Text(
-              'Summer Season',
+          // Season Name and Description
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
+              season.name,
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: Colors.green.shade900,
               ),
             ),
-            SizedBox(height: 8),
-            Text(
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
               'Explore the summer season, its duration, crops, diseases, and environmental requirements.',
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.green.shade700,
               ),
             ),
-            SizedBox(height: 16),
+          ),
+          SizedBox(height: 16),
 
-            // Duration Card
-            buildCardWithIcon(
-              context,
+          // Duration Card
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: buildCardWithIcon(
               icon: Icons.calendar_today,
               title: 'Duration',
               subtitle: 'March to June (Approx. 3-4 months)',
               backgroundColor: Colors.green.shade100,
             ),
-            SizedBox(height: 16),
-
-            // Good for Growing Crops
-            buildCardWithImage(
-              context,
-              title: 'Good for Growing Crops',
-              imageUrl:
-                  'https://cdn.britannica.com/16/187216-050-CB57A09B/tomatoes-tomato-plant-Fruit-vegetable.jpg',
-              description: 'Tomato, Corn, Cotton, Chili, Soybean',
-            ),
-            SizedBox(height: 16),
-
-            // Suitable for Harvesting Crops
-            buildCardWithImage(
-              context,
-              title: 'Suitable for Harvesting Crops',
-              imageUrl:
-                  'https://cdn.britannica.com/16/187216-050-CB57A09B/tomatoes-tomato-plant-Fruit-vegetable.jpg',
-              description: 'Wheat, Barley, Mustard',
-            ),
-            SizedBox(height: 16),
-
-            // Diseases that Can Affect
-            buildCardWithImage(
-              context,
-              title: 'Diseases that Can Affect',
-              imageUrl:
-                  'https://cdn.britannica.com/16/187216-050-CB57A09B/tomatoes-tomato-plant-Fruit-vegetable.jpg',
-              description: 'Powdery Mildew, Bacterial Blight, Aphids, Thrips',
-            ),
-            SizedBox(height: 16),
-
-            // Humidity Requirements
-            buildCardWithIcon(
-              context,
-              icon: Icons.water_drop,
-              title: 'Humidity Requirements',
-              subtitle: '30% to 60% (Varies by Crop)',
-              backgroundColor: Colors.blue.shade100,
-            ),
-            SizedBox(height: 16),
-
-            // Sunlight Requirements
-            buildCardWithIcon(
-              context,
-              icon: Icons.wb_sunny,
-              title: 'Sunlight Requirements',
-              subtitle: '6-8 hours of direct sunlight daily',
-              backgroundColor: Colors.yellow.shade100,
-            ),
-          ],
-        ),
+          ),
+          SizedBox(height: 16),
+        ],
       ),
     );
   }
 
-  Widget buildCardWithIcon(
-    BuildContext context, {
+  Widget buildCardWithIcon({
     required IconData icon,
     required String title,
     required String subtitle,
@@ -165,8 +160,7 @@ class SeasonsInformationScreen extends StatelessWidget {
     );
   }
 
-  Widget buildCardWithImage(
-    BuildContext context, {
+  Widget buildCardWithImage({
     required String title,
     required String imageUrl,
     required String description,

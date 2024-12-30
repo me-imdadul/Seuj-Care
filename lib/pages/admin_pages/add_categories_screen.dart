@@ -1,9 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:seujcare/models/crop_disease_model.dart';
-import 'package:seujcare/providers/admin_provider.dart';
+import 'package:seujcare/providers/crop_provider.dart';
 
 import 'package:seujcare/utils/constants.dart';
 
@@ -35,10 +36,21 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
     super.initState();
   }
 
+  void clearFields() {
+    name.clear();
+    symptom.clear();
+    disease.clear();
+    season.clear();
+    condition.clear();
+    stage.clear();
+    image.clear();
+    information.clear();
+    treatment.clear();
+    fertilizer.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    var p = Provider.of<AdminProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Categories'),
@@ -78,7 +90,7 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
   }
 
   _buildCategoryList(BuildContext context) {
-    var provider = Provider.of<AdminProvider>(context);
+    var provider = Provider.of<CropProvider>(context);
     return provider.cropDiseases.isEmpty
         ? const Center(
             child: Text('No Category Found!'),
@@ -110,11 +122,15 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
                                 width: 100,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stackTrace) {
-                                  return const Icon(Icons.image_not_supported);
+                                  return Image.asset(
+                                      height: 140,
+                                      width: 100,
+                                      fit: BoxFit.cover,
+                                      'assets/tomatoe.webp');
                                 },
                               ),
                             ),
-                            Gap(20),
+                            const Gap(20),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,23 +141,23 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
                                         fontSize: 28,
                                         fontWeight: FontWeight.bold),
                                   ),
-                                  Gap(4),
+                                  const Gap(4),
                                   Text(
                                     provider.cropDiseases[index].information,
-                                    style: TextStyle(fontSize: 16),
+                                    style: const TextStyle(fontSize: 16),
                                   )
                                 ],
                               ),
                             ),
                             GestureDetector(
                               onTap: () async {
-                                var response = await Provider.of<AdminProvider>(
+                                var response = await Provider.of<CropProvider>(
                                         context,
                                         listen: false)
                                     .deletecropDiseaseCategory(index);
                                 print(response);
                               },
-                              child: Icon(
+                              child: const Icon(
                                 Icons.delete,
                                 color: Colors.red,
                                 size: 30,
@@ -165,43 +181,43 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Crop Name'),
+            const Text('Crop Name'),
             TextField(
               controller: name,
             ),
-            Text('Symptoms'),
+            const Text('Symptoms'),
             TextField(
               controller: symptom,
             ),
-            Text('Disease Name'),
+            const Text('Disease Name'),
             TextField(
               controller: disease,
             ),
-            Text('Season'),
+            const Text('Season'),
             TextField(
               controller: season,
             ),
-            Text('Condition'),
+            const Text('Condition'),
             TextField(
               controller: condition,
             ),
-            Text('Stage'),
+            const Text('Stage'),
             TextField(
               controller: stage,
             ),
-            Text('Images'),
+            const Text('Images'),
             TextField(
               controller: image,
             ),
-            Text('Information'),
+            const Text('Information'),
             TextField(
               controller: information,
             ),
-            Text('Treatment'),
+            const Text('Treatment'),
             TextField(
               controller: treatment,
             ),
-            Text('Suggested Fertilizer'),
+            const Text('Suggested Fertilizer'),
             TextField(
               controller: fertilizer,
             ),
@@ -221,12 +237,12 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen>
                     information: information.text,
                     treatment: treatment.text,
                     suggestedFertilizer: ["Fertilizer 1"]);
-                print(cropDiseaseModel.toMap().toString());
+                log(cropDiseaseModel.toMap().toString());
                 var response =
-                    await Provider.of<AdminProvider>(context, listen: false)
+                    await Provider.of<CropProvider>(context, listen: false)
                         .addCropDiseaseCategory(cropDiseaseModel);
 
-                print(response);
+                log(response.toString());
               },
               child: const Text('Add'),
             )

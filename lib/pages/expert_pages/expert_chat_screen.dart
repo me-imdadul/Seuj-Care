@@ -3,17 +3,48 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:provider/provider.dart';
+import 'package:seujcare/models/chat_model.dart';
+import 'package:seujcare/models/query_model.dart';
+import 'package:seujcare/providers/chat_provider.dart';
 
 class ExpertChatScreen extends StatefulWidget {
-  const ExpertChatScreen({super.key});
+  final QueryModel model;
+  const ExpertChatScreen({
+    super.key,
+    required this.model,
+  });
 
   @override
   State<ExpertChatScreen> createState() => _ExpertChatScreenState();
 }
 
 class _ExpertChatScreenState extends State<ExpertChatScreen> {
-  final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
-  final List<types.Message> _messages = [];
+  List<types.Message> _messages = [];
+
+  @override
+  void initState() {
+    getChatData();
+    super.initState();
+  }
+
+  Future<void> getChatData() async {
+    Provider.of<ChatProvider>(context, listen: false)
+        .fetchChatHistory(widget.model.assignedTo, widget.model.createdBy);
+    var provider2 = Provider.of<ChatProvider>(context, listen: false);
+
+    _messages = provider2.chatHistory
+        .map(
+          (e) => types.TextMessage(
+              author: types.User(id: e.receiverId),
+              id: e.senderId,
+              text: e.message),
+        )
+        .toList();
+
+    print(_messages.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,11 +60,11 @@ class _ExpertChatScreenState extends State<ExpertChatScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'User',
+                    widget.model.createdBy,
                     style: TextStyle(fontSize: 18),
                   ),
                   Text(
-                    '12 jul, 2024 12;11 pm',
+                    widget.model.timestamp.toString(),
                     style: TextStyle(fontSize: 12),
                   ),
                 ],
@@ -50,7 +81,7 @@ class _ExpertChatScreenState extends State<ExpertChatScreen> {
         body: Chat(
             messages: _messages,
             onSendPressed: _handleSendPressed,
-            user: _user));
+            user: types.User(id: widget.model.assignedTo)));
   }
 
   void _addMessage(types.Message message) {
@@ -59,13 +90,28 @@ class _ExpertChatScreenState extends State<ExpertChatScreen> {
     });
   }
 
-  void _handleSendPressed(types.PartialText message) {
+  void _handleSendPressed(types.PartialText message) async {
+    var provider = Provider.of<ChatProvider>(context, listen: false);
     final textMessage = types.TextMessage(
-      author: _user,
+      author: types.User(id: widget.model.assignedTo),
       createdAt: DateTime.now().millisecondsSinceEpoch,
       id: DateTime.now().toString(),
       text: message.text,
     );
+
+    var chatModel = ChatModel(
+        senderId: widget.model.assignedTo,
+        receiverId: widget.model.createdBy,
+        message: message.text,
+        content: '',
+        timestamp: DateTime.timestamp());
+
+    var result = await provider.sendMessage(chatModel);
+    if (result == null) {
+      print('Message sent');
+    } else {
+      print(result);
+    }
 
     _addMessage(textMessage);
   }

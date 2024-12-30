@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:seujcare/pages/admin_pages/admin_main_screen.dart';
+import 'package:seujcare/pages/expert_pages/expert_main_screen.dart';
 import 'package:seujcare/pages/farmer_pages/home_screen.dart';
-
 import 'package:seujcare/pages/farmer_pages/splash_screen.dart';
 import 'package:seujcare/providers/admin_provider.dart';
+import 'package:seujcare/providers/chat_provider.dart';
+import 'package:seujcare/providers/crop_provider.dart';
+import 'package:seujcare/providers/expert_provider.dart';
+import 'package:seujcare/providers/query_provider.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -34,6 +37,18 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(
             create: (context) => AdminProvider(),
           ),
+          ChangeNotifierProvider(
+            create: (context) => CropProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => QueryProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ExpertProvider(),
+          ),
+          ChangeNotifierProvider(
+            create: (context) => ChatProvider(),
+          ),
         ],
         child: MaterialApp(
           title: 'Seuj Care',
@@ -45,6 +60,9 @@ class _MyAppState extends State<MyApp> {
           home: Builder(builder: (context) {
             if (session.isEmpty) {
               return const SplashScreen();
+            }
+            if (session['role'] == 'Expert') {
+              return const ExpertMainScreen();
             }
             return const HomeScreen();
           }),

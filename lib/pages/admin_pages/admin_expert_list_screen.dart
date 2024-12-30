@@ -85,7 +85,11 @@ class _AdminExpertScreenState extends State<AdminExpertScreen> {
                         expertModel: provider.experts[index],
                         onTap: () async {
                           print(await AuthenticationServices().session);
-                          navigateToScreen(context, ExpertProfile());
+                          navigateToScreen(
+                              context,
+                              ExpertProfile(
+                                isAdmin: true,
+                              ));
                         },
                       ));
                 },
